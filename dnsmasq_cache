@@ -1,0 +1,32 @@
+#!/bin/sh
+
+# Munin plugin displaying dnsmasq data
+
+# To signal dnsmasq to dump cache stats to it's log, as root,
+# crontab -e
+# */5  *  *   *     *    killall -10 dnsmasq
+
+# It's ugly. Contact me for a full refund.
+
+# Output graph config if script is called with parameter "config"
+case $1 in
+   config)
+        cat <<'EOM'
+graph_title dnsmasq cache details
+graph_info Displays details of dnsmasq caching
+cachemisses.label cache misses
+cachemisses.info Number of unsuccessful cache look ups.
+cachemisses.type COUNTER
+cachehits.label cache hits
+cachehits.info Number of successful cache look ups.
+cachehits.type COUNTER
+cacheoverwrite.label existing cache entries overwritten
+cacheoverwrite.info Number of unexpired cache entries overwritten.
+cacheoverwrite.type COUNTER
+EOM
+        exit 0;;
+esac
+
+# Output graph details if script is called with no parms
+tac /var/log/dnsmasq.log | awk -F "[ \t\n/,]+" '/queries forwarded/ { print "cachemisses.value "$7"\ncachehits.value "$11 } /cache size/ { print "cacheoverwrite.value "$8 ;exit }'
+
