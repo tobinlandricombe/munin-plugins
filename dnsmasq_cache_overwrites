@@ -1,0 +1,24 @@
+#!/bin/sh
+
+# Munin plugin displaying dnsmasq cache overwrite data
+
+# To signal dnsmasq to dump cache stats to it's log, as root,
+# crontab -e
+# */5  *  *   *     *    killall -10 dnsmasq
+
+# Output graph config if script is called with parameter "config"
+case $1 in
+   config)
+        cat <<'EOM'
+graph_title dnsmasq cache overwrites
+graph_info Displays dnsmasq cache overwrites
+graph_vlabel overwrites
+graph_category network
+cacheoverwrite.label overwrites
+cacheoverwrite.info Number of unexpired cache entries overwritten.
+EOM
+        exit 0;;
+esac
+
+# Output graph details if script is called with no parms
+tac /var/log/dnsmasq.log | awk -F "[ \t\n/,]+" '/cache size/ { print "cacheoverwrite.value "$8 }'
