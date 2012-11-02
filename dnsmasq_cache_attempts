@@ -23,4 +23,4 @@ EOM
 esac
 
 # Output graph details if script is called with no parms
-tac /var/log/dnsmasq.log | awk -F "[ \t\n/,]+" '/queries forwarded/ { print "cachemisses.value -"$7"\ncachehits.value "$11 }'
+tac /var/log/dnsmasq.log | awk -F "[ \t\n/,]+" '/queries forwarded/ { print "cachemisses.value -"$7"\ncachehits.value "$11; exit; }'

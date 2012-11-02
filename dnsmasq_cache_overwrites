@@ -21,4 +21,4 @@ EOM
 esac
 
 # Output graph details if script is called with no parms
-tac /var/log/dnsmasq.log | awk -F "[ \t\n/,]+" '/cache size/ { print "cacheoverwrite.value "$8 }'
+tac /var/log/dnsmasq.log | awk -F "[ \t\n/,]+" '/cache size/ { print "cacheoverwrite.value "$8; exit; }'
